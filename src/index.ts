@@ -1,13 +1,11 @@
 import { compose, curryN, reduce } from './fp';
+import { binaryFnUniform } from './fp/internalTypes';
+import * as sm from './state-machine';
 
-type arrBinaryFn = (arg1: any[], arg2: any[]) => any[];
-type numberBinaryFn = (arg1: number, arg2: number) => number;
-type stringBinaryFn = (arg1: string, arg2: string) => string;
-
-const arrConcat: arrBinaryFn = (x, y) => [...x, ...y];
-const concat: stringBinaryFn = (x, y) => x + y;
-const sum: numberBinaryFn = (x, y) => x + y;
-const product: numberBinaryFn = (x, y) => x * y;
+const arrConcat: binaryFnUniform<any[]> = (x, y) => [...x, ...y];
+const concat: binaryFnUniform<string> = (x, y) => x + y;
+const sum: binaryFnUniform<number> = (x, y) => x + y;
+const product: binaryFnUniform<number> = (x, y) => x * y;
 
 console.log(reduce(arrConcat, [], [[1, 2, 3], ['a', 'b', 'c']]));
 console.log(reduce(concat, '', ['hello', ' ', 'world']));
@@ -29,3 +27,16 @@ const complexCalculations = compose(
 );
 console.log(complexCalculations(0));
 console.log(complexCalculations(1));
+
+const position = {
+  x: 0,
+  y: 0,
+};
+
+console.log(sm.moveUp(position));
+console.log(sm.moveDown(position));
+console.log(sm.moveLeft(position));
+console.log(sm.moveRight(position));
+
+const up2right1 = compose(sm.moveUp, sm.moveUp, sm.moveRight);
+console.log(compose(up2right1, up2right1, up2right1)(position));

@@ -4,13 +4,8 @@ type reducer<T, S> = (a: S, v: T) => S;
 
 export const reduce = curryN(
   2,
-  <T, S>(
-    reducer: reducer<T, S>,
-    initialValue: S,
-    list: T[]
-  ): S => {
-    return _reduce(reducer, initialValue, list);
-  }
+  <T, S>(reducer: reducer<T, S>, initialValue: S, list: T[]): S =>
+    _reduce(reducer, initialValue, list)
 );
 
 const _reduce = <T, S>(
