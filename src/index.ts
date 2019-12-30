@@ -1,6 +1,11 @@
-import { compose, curryN, reduce } from './fp';
-import { binaryFnUniform } from './fp/internalTypes';
-import * as sm from './state-machine';
+import { binaryFnUniform , compose, curryN, reduce } from './fp';
+import { entity, move } from './state-machine/entity';
+import {
+  moveUp as up,
+  moveDown as down,
+  moveRight as right,
+  moveLeft as left,
+} from './state-machine/move';
 
 const arrConcat: binaryFnUniform<any[]> = (x, y) => [...x, ...y];
 const concat: binaryFnUniform<string> = (x, y) => x + y;
@@ -28,15 +33,28 @@ const complexCalculations = compose(
 console.log(complexCalculations(0));
 console.log(complexCalculations(1));
 
-const position = {
+const startingPosition = {
   x: 0,
   y: 0,
 };
 
-console.log(sm.moveUp(position));
-console.log(sm.moveDown(position));
-console.log(sm.moveLeft(position));
-console.log(sm.moveRight(position));
+const entity1: entity = {
+  name: 'foo',
+  position: startingPosition,
+  state: 'alive',
+};
 
-const up2right1 = compose(sm.moveUp, sm.moveUp, sm.moveRight);
-console.log(compose(up2right1, up2right1, up2right1)(position));
+console.log(move(up, entity1));
+console.log(
+  compose(
+    move(up),
+    move(up),
+    move(up),
+    move(up),
+  )(entity1)
+);
+
+// This hotness right here is why you want to write in the FP paradigm
+const upRight = compose(up, right);
+
+console.log(move(upRight)(entity1));
