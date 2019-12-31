@@ -1,5 +1,6 @@
 import { binaryFnUniform , compose, curryN, reduce } from './fp';
-import { entity, move } from './state-machine/entity';
+import { move } from './state-machine/environment';
+import { entity, move as moveEntity } from './state-machine/entity';
 import {
   moveUp as up,
   moveDown as down,
@@ -44,17 +45,25 @@ const entity1: entity = {
   state: 'alive',
 };
 
-console.log(move(up, entity1));
-console.log(
-  compose(
-    move(up),
-    move(up),
-    move(up),
-    move(up),
-  )(entity1)
+const env = {
+  location: 'world',
+  entities: {
+    foo: entity1,
+    bar: entity1,
+  },
+};
+
+console.log(moveEntity(up, entity1));
+const moveEntityUp4 = compose(
+  moveEntity(up),
+  moveEntity(up),
+  moveEntity(up),
+  moveEntity(up),
 );
 
 // This hotness right here is why you want to write in the FP paradigm
 const upRight = compose(up, right);
 
-console.log(move(upRight)(entity1));
+console.log(moveEntity(upRight)(entity1));
+
+console.log(JSON.stringify(move(moveEntityUp4, env), null, 2));

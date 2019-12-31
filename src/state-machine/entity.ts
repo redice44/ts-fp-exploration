@@ -16,7 +16,7 @@ export const move = curryN(
   })
 );
 
-const deepClone: unaryFnUniform<entity> = entity => ({
+export const deepClone: unaryFnUniform<entity> = entity => ({
   ...entity,
   position: { ...entity.position }
 });
