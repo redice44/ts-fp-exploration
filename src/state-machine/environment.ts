@@ -14,17 +14,17 @@ type environment = {
   entities: dict<entity>;
 };
 
-export const move = curryN(
+export const mapEntities = curryN(
   2,
   (
-    moveFn: unaryFnUniform<entity>,
     filterFn: predicate<entity>,
+    mapFn: unaryFnUniform<entity>,
     _env: environment
   ): environment => ({
     ...deepClone(_env),
     entities: {
       ..._env.entities,
-      ...compose(mapDict(moveFn), filterDict(filterFn))(_env.entities)
+      ...compose(mapDict(mapFn), filterDict(filterFn))(_env.entities)
     }
   })
 );

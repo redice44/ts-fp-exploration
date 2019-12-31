@@ -1,5 +1,5 @@
-import { binaryFnUniform , compose, curryN, filter, map, reduce, predicate } from './fp';
-import { move } from './state-machine/environment';
+import { binaryFnUniform , compose, curryN, filter, map, reduce, predicate, unaryFnUniform } from './fp';
+import { mapEntities } from './state-machine/environment';
 import { entity, move as moveEntity } from './state-machine/entity';
 import {
   moveUp as up,
@@ -70,16 +70,26 @@ const moveEntityUp4 = compose(
 
 // This hotness right here is why you want to write in the FP paradigm
 const upRight = compose(up, right);
+const moveEntityUpRight = moveEntity(upRight);
 
 console.log(moveEntity(upRight)(entity1));
 
-const allEntities: predicate<entity> = e => true;
+const anyEntities: predicate<entity> = e => true;
 const isAlive: predicate<entity> = e => e.state === 'alive';
+const isDead: predicate<entity> = e => !isAlive(e);
+const killAll: unaryFnUniform<entity> = e => ({ ...e, state: 'dead' });
+const sendHome: unaryFnUniform<entity> = e => ({ ...e, position: { ...startingPosition } });
+
+const all = mapEntities(anyEntities);
+const alive = mapEntities(isAlive);
+const dead = mapEntities(isDead);
 
 console.log(JSON.stringify(
   compose(
-    move(moveEntityUp4, isAlive),
-    move(moveEntity(upRight), allEntities),
+    alive(killAll),
+    dead(sendHome),
+    alive(moveEntityUp4),
+    all(moveEntityUpRight),
   )(env)
 , null, 2));
 
