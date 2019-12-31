@@ -2,15 +2,10 @@ import { curryN } from './curry';
 import { reduce } from './reduce';
 import { dict } from './commonTypes';
 
-export const map = curryN(
-  1,
-  <T, U>(mapFn: Function, input: T): U => {
-    if (Array.isArray(input) && input.length > 1) {
-      const [first, ...next] = input;
-      return reduce(mapFn, mapFn(first), next);
-    }
-    return mapFn(input);
-  }
+export const map = curryN(1, <T, U>(mapFn: Function, input: T|T[]): U|U[] =>
+  Array.isArray(input)
+    ? reduce((acc: T[], v: T) => [...acc, mapFn(v)], [], input)
+    : mapFn(input)
 );
 
 export const mapDict = curryN(
