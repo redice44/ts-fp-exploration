@@ -2,7 +2,7 @@ import { curryN } from './curry';
 import { reduce } from './reduce';
 import { dict } from './commonTypes';
 
-export const map = curryN(1, <T, U>(mapFn: Function, input: T|T[]): U|U[] =>
+export const map = curryN(1, <T, U>(mapFn: Function, input: T | T[]): U | U[] =>
   Array.isArray(input)
     ? reduce((acc: T[], v: T) => [...acc, mapFn(v)], [], input)
     : mapFn(input)

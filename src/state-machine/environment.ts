@@ -1,4 +1,12 @@
-import { curryN, dict, mapDict, unaryFnUniform } from '../fp';
+import {
+  compose,
+  curryN,
+  dict,
+  filterDict,
+  mapDict,
+  predicate,
+  unaryFnUniform
+} from '../fp';
 import { deepClone as entityClone, entity, move as moveEntity } from './entity';
 
 type environment = {
@@ -7,10 +15,17 @@ type environment = {
 };
 
 export const move = curryN(
-  1,
-  (moveFn: unaryFnUniform<entity>, _env: environment): environment => ({
+  2,
+  (
+    moveFn: unaryFnUniform<entity>,
+    filterFn: predicate<entity>,
+    _env: environment
+  ): environment => ({
     ...deepClone(_env),
-    entities: { ...mapDict(moveFn, _env.entities) }
+    entities: {
+      ..._env.entities,
+      ...compose(mapDict(moveFn), filterDict(filterFn))(_env.entities)
+    }
   })
 );
 

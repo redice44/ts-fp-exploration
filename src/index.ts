@@ -1,4 +1,4 @@
-import { binaryFnUniform , compose, curryN, reduce } from './fp';
+import { binaryFnUniform , compose, curryN, filter, map, reduce, predicate } from './fp';
 import { move } from './state-machine/environment';
 import { entity, move as moveEntity } from './state-machine/entity';
 import {
@@ -45,11 +45,18 @@ const entity1: entity = {
   state: 'alive',
 };
 
+const entity2: entity = {
+  name: 'bar',
+  position: startingPosition,
+  state: 'dead',
+};
+
 const env = {
   location: 'world',
   entities: {
     foo: entity1,
     bar: entity1,
+    baz: entity2,
   },
 };
 
@@ -66,4 +73,13 @@ const upRight = compose(up, right);
 
 console.log(moveEntity(upRight)(entity1));
 
-console.log(JSON.stringify(move(moveEntityUp4, env), null, 2));
+const allEntities: predicate<entity> = e => true;
+const isAlive: predicate<entity> = e => e.state === 'alive';
+
+console.log(JSON.stringify(
+  compose(
+    move(moveEntityUp4, isAlive),
+    move(moveEntity(upRight), allEntities),
+  )(env)
+, null, 2));
+

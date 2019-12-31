@@ -12,7 +12,7 @@ export const move = curryN(
   1,
   (moveFn: unaryFnUniform<position>, _entity: entity): entity => ({
     ...deepClone(_entity),
-    position: { ...map(moveFn, _entity.position) }
+    position: map(moveFn, _entity.position)
   })
 );
 
