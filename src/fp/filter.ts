@@ -31,5 +31,5 @@ const _filterDict = <T>(
       input
     );
   }
-  return results;
+  return _filterDict(predicate, results, nextKeys, input);
 };
